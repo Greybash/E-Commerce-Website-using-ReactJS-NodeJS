@@ -34,7 +34,7 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        
+        cd frontend
         npm install
         npm run build
       displayName: 'Clean install and build'
