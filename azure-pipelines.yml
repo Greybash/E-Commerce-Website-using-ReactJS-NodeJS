@@ -9,6 +9,10 @@ trigger:
 pool:
   name: 'prempool'
 
+  
+variables:
+  NODE_OPTIONS: --openssl-legacy-provider
+
 stages:
 - stage: Clean_up 
   displayName: Cleaning the workspace
