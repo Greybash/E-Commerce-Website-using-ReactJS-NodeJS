@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  name: 'prempool'
 
 steps:
 - task: NodeTool@0
