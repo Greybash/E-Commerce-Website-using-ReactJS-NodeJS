@@ -10,8 +10,7 @@ pool:
   name: 'prempool'
 
   
-variables:
-  NODE_OPTIONS: --openssl-legacy-provider
+
 
 stages:
 - stage: Clean_up 
@@ -34,7 +33,7 @@ stages:
       clean: true
     - task: NodeTool@0
       inputs:
-        versionSpec: '20.x'
+        versionSpec: '12.x'
       displayName: 'Install Node.js'
 
     - script: |
