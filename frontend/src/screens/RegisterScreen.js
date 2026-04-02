@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { signin } from "../actions/userAction";
+import { register } from "../actions/userAction";
 
-function SigninScreen(props) {
+function RegisterScreen(props) {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const userSignin = useSelector(state => state.userSignin);
-    const { loading, userInfo, error } = userSignin;
+    const userRegister = useSelector(state => state.userRegister);
+    const { loading, userInfo, error } = userRegister;
     const dispatch = useDispatch();
     const redirect = props.location.search
         ? props.location.search.split("=")[1]
@@ -19,23 +20,33 @@ function SigninScreen(props) {
             props.history.push(redirect);
         }
         return () => {
+            //
         };
-    }, [userInfo]);
+    }, [userInfo, props.history, redirect]);
 
     const submitHandler = e => {
         e.preventDefault();
-        dispatch(signin(email, password));
+        dispatch(register(name, email, password));
     };
     return (
         <div className="form">
             <form onSubmit={submitHandler}>
                 <ul className="form-container">
                     <li>
-                        <h2>Sign-In</h2>
+                        <h2>Create Account</h2>
                     </li>
                     <li>
                         {loading && <div>Loading...</div>}
                         {error && <div>{error}</div>}
+                    </li>
+                    <li>
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="name"
+                            name="name"
+                            id="name"
+                            onChange={e => setName(e.target.value)}
+                        ></input>
                     </li>
                     <li>
                         <label htmlFor="email">Email</label>
@@ -57,20 +68,20 @@ function SigninScreen(props) {
                     </li>
                     <li>
                         <button type="submit" className="button primary">
-                            Signin
+                            Register
                         </button>
                     </li>
-                    <li>New to Origami?</li>
+                    <li>Already Have an account?</li>
                     <li>
                         <Link
                             to={
                                 redirect === "/"
-                                    ? "register"
-                                    : "register?redirect=" + redirect
+                                    ? "signin"
+                                    : "signin?redirect=" + redirect
                             }
                             className="button secondary text-center"
                         >
-                            Create your Origami account.
+                            Sign-In
                         </Link>
                     </li>
                 </ul>
@@ -78,4 +89,4 @@ function SigninScreen(props) {
         </div>
     );
 }
-export default SigninScreen;
+export default RegisterScreen;

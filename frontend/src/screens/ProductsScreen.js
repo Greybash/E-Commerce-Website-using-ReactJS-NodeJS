@@ -17,7 +17,7 @@ function ProductsScreen(props) {
     const [countInStock, setCountInStock] = useState("");
     const [description, setDescription] = useState("");
     const productList = useSelector(state => state.productList);
-    const { loading, products, error } = productList;
+    const { products } = productList;
 
     const productSave = useSelector(state => state.productSave);
     const {
@@ -28,9 +28,7 @@ function ProductsScreen(props) {
 
     const productDelete = useSelector(state => state.productDelete);
     const {
-        loading: loadingDelete,
-        success: successDelete,
-        error: errorDelete
+        success: successDelete
     } = productDelete;
 
     const dispatch = useDispatch();
@@ -43,7 +41,7 @@ function ProductsScreen(props) {
         return () => {
             //
         };
-    }, [successSave, successDelete]);
+    }, [successSave, successDelete, dispatch]);
 
     const openModal = product => {
         setModalVisible(true);

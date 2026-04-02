@@ -9,24 +9,25 @@ function HomeScreen(props) {
     const productList = useSelector(state => state.productList);
     const { products, loading, error } = productList;
     const dispatch = useDispatch();
+    const category = props.match.params.category;
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        dispatch(listProducts());
-        return () => {
-        };
-    }, []);
+   useEffect(() => {
+  dispatch(listProducts())
+}, [dispatch]);
+
+    const filteredProducts = category ? products.filter(p => p.category === category) : products;
 
     return (
         <div>
             <Corousel />
+            <h2>{category || 'All Products'}</h2>
             {loading ? (
                 <div>loading...</div>
             ) : error ? (
                 <div>{error}</div>
             ) : (
                 <ul className="products">
-                    {products.map(product => (
+                    {filteredProducts.map(product => (
                         <li key={product._id}>
                             <div className="product">
                                 <Link to={"/product/" + product._id}>

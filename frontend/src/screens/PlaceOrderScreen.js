@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removeFromCart } from "../actions/cartAction";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
 
@@ -16,8 +15,6 @@ function PlaceOrderScreen(props) {
     const shippingPrice = itemsPrice > 100 ? 0 : 10;
     const taxPrice = 0.15 * itemsPrice;
     const totalPrice = itemsPrice + shippingPrice + taxPrice;
-
-    const dispatch = useDispatch();
 
     useEffect(() => {
         window.scrollTo(0, 0);

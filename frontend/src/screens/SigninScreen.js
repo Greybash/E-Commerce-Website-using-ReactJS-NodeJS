@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { register } from "../actions/userAction";
+import { signin } from "../actions/userAction";
 
-function RegisterScreen(props) {
-    const [name, setName] = useState("");
+function SigninScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rePassword, setRePassword] = useState("");
-    const userRegister = useSelector(state => state.userRegister);
-    const { loading, userInfo, error } = userRegister;
+    const userSignin = useSelector(state => state.userSignin);
+    const { loading, userInfo, error } = userSignin;
     const dispatch = useDispatch();
     const redirect = props.location.search
         ? props.location.search.split("=")[1]
@@ -21,33 +19,23 @@ function RegisterScreen(props) {
             props.history.push(redirect);
         }
         return () => {
-            //
         };
-    }, [userInfo]);
+    }, [userInfo, props.history, redirect]);
 
     const submitHandler = e => {
         e.preventDefault();
-        dispatch(register(name, email, password));
+        dispatch(signin(email, password));
     };
     return (
         <div className="form">
             <form onSubmit={submitHandler}>
                 <ul className="form-container">
                     <li>
-                        <h2>Create Account</h2>
+                        <h2>Sign-In</h2>
                     </li>
                     <li>
                         {loading && <div>Loading...</div>}
                         {error && <div>{error}</div>}
-                    </li>
-                    <li>
-                        <label htmlFor="name">Name</label>
-                        <input
-                            type="name"
-                            name="name"
-                            id="name"
-                            onChange={e => setName(e.target.value)}
-                        ></input>
                     </li>
                     <li>
                         <label htmlFor="email">Email</label>
@@ -68,30 +56,21 @@ function RegisterScreen(props) {
                         ></input>
                     </li>
                     <li>
-                        <label htmlFor="repassword">Retype Password</label>
-                        <input
-                            type="repassword"
-                            id="repassword"
-                            name="repassword"
-                            onChange={e => setRePassword(e.target.value)}
-                        ></input>
-                    </li>
-                    <li>
                         <button type="submit" className="button primary">
-                            Register
+                            Signin
                         </button>
                     </li>
-                    <li>Already Have an account?</li>
+                    <li>New to Origami?</li>
                     <li>
                         <Link
                             to={
                                 redirect === "/"
-                                    ? "signin"
-                                    : "signin?redirect=" + redirect
+                                    ? "register"
+                                    : "register?redirect=" + redirect
                             }
                             className="button secondary text-center"
                         >
-                            Sign-In
+                            Create your Origami account.
                         </Link>
                     </li>
                 </ul>
@@ -99,4 +78,4 @@ function RegisterScreen(props) {
         </div>
     );
 }
-export default RegisterScreen;
+export default SigninScreen;

@@ -33,13 +33,13 @@ function App() {
                         <button onClick={openmenu}>&#9776;</button>
                         <Link to="/">
                             Origami
-                            <img src={logo} className="logo" />
+                            <img src={logo} className="logo" alt="Origami logo" />
                         </Link>
                     </div>
                     <div className="header-links">
                         <span>
                             <Link to="/cart">
-                                <span class="material-icons">
+                                <span className="material-icons">
                                     shopping_cart
                                 </span>
                             </Link>
@@ -61,20 +61,20 @@ function App() {
                         className="sidebar-close-button"
                         onClick={closemenu}
                     >
-                        <span class="material-icons">arrow_back_ios</span>
+                        <span className="material-icons">arrow_back_ios</span>
                     </button>
                     <ul>
                         <li>
-                            <a href="index.html">Mens</a>
+                            <Link to="/category/Men's">Men's</Link>
                         </li>
                         <li>
-                            <a href="index.html">Women</a>
+                            <Link to="/category/Women's">Women's</Link>
                         </li>
                         <li>
-                            <a href="index.html">Unisex</a>
+                            <Link to="/category/Unisex">Unisex</Link>
                         </li>
                         <li>
-                            <a href="index.html">Children</a>
+                            <Link to="/category/Kids">Kids</Link>
                         </li>
                     </ul>
                 </aside>
@@ -90,6 +90,7 @@ function App() {
                         <Route path="/signin" component={SigninScreen} />
                         <Route path="/register" component={RegisterScreen} />
                         <Route path="/product/:id" component={ProductScreen} />
+                        <Route path="/category/:category" component={HomeScreen} />
                         <Route path="/" exact={true} component={HomeScreen} />
                         <Route path="/cart/:id?" component={CartScreen} />
                     </div>

@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
+import data from "./data";
+import Product from "./models/productModel";
 
 const path = require("path");
 
@@ -20,6 +22,20 @@ mongoose
         useCreateIndex: true
     })
     .catch(error => console.log(error.reason));
+
+const importData = async () => {
+    try {
+        await Product.deleteMany();
+        await Product.insertMany(data.products);
+        console.log("Data Imported!");
+    } catch (error) {
+        console.error(`${error}`);
+    }
+};
+
+mongoose.connection.once('open', () => {
+    importData();
+});
 
 const app = express();
 

@@ -1,0 +1,2 @@
+install mongodb
+install npm
