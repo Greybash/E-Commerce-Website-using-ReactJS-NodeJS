@@ -15,6 +15,11 @@ resource "azurerm_resource_group" "rg" {
   name     = "E-commerce-rg"
   location = "South India"
 }
+resource "tls_private_key" "aks_ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 
 module "aks" {
   source = "./modules/aks"
@@ -29,7 +34,7 @@ module "aks" {
   vm_size    = "Standard_D2ls_v5"
 
  
-
+  ssh_public_key = tls_private_key.aks_ssh.public_key_openssh
   tags = {
     "Resource Owner"        = "Prem"
     "Resource Group Owner"  = "Prem"
