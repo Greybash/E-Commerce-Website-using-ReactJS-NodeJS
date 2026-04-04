@@ -31,23 +31,21 @@ stages:
   displayName: Terraform Destoroy
   
   jobs:
-    - deployment: destroy
-      displayName: Destroy Terraform
-      environment: terraform-approval-destroy
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - checkout: self
+      - deployment: destroy
+        displayName: Destroy Terraform
+        environment: terraform-approval-destroy
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - checkout: self
 
-            - task: AzureCLI@2
-              inputs:
-                azureSubscription: ${{ parameters.SUB_ID }}
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  terraform init -reconfigure
-                  terraform destroy -auto-approve
-
-
-
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: ${{ parameters.SUB_ID }}
+                  scriptType: bash
+                  scriptLocation: inlineScript
+                  workingDirectory: $(TF_WORKING_DIR)
+                  inlineScript: |
+                    terraform init -reconfigure
+                    terraform destroy -auto-approve
