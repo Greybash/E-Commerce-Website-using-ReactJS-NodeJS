@@ -9,7 +9,7 @@ trigger:
 pool:
   name: 'prempool'
   demands:
-  - terraform
+    - terraform
 
 variables:
   TF_WORKING_DIR: terraform
