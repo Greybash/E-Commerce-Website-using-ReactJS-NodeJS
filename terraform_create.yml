@@ -83,10 +83,10 @@ stages:
           steps:
           - checkout: self
 
-          # - task: DownloadPipelineArtifact@2
-          #   inputs:
-          #     artifact: tfplan
-          #     path: $(TF_WORKING_DIR)
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifact: tfplan
+              path: $(TF_WORKING_DIR)
 
           - task: AzureCLI@2
             inputs:
@@ -94,8 +94,8 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                # echo "Initializing Terraform..."
-                # terraform init -reconfigure
+                echo "Initializing Terraform..."
+                terraform init -reconfigure
 
                 echo "Applying Terraform..."
                 terraform apply -auto-approve tfplan
