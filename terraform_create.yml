@@ -60,7 +60,7 @@ stages:
 - stage: Terraform_Apply
   displayName: Terraform Apply
   dependsOn: Terraform_Plan
-  condition: and(succeeded(), ne('${{ parameters.destroy }}', 'Yes'))
+  condition: succeeded()
 
   jobs:
   - deployment: apply
@@ -70,6 +70,7 @@ stages:
       runOnce:
         deploy:
           steps:
+
 
           - script: |
 
