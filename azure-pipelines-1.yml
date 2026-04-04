@@ -1,0 +1,53 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: 'prempool'
+  demands:
+    - terraform
+parameters:
+  - name: SUB_ID
+    displayName: 'Azure Subscription'
+    type: string
+
+
+variables:
+  TF_WORKING_DIR: terraform
+
+stages:
+
+
+- stage: Terraform_Destroy
+  displayName: Terraform Destoroy
+  
+  jobs:
+    - deployment: destroy
+      displayName: Destroy Terraform
+      environment: terraform-approval-destroy
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - checkout: self
+
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: ${{ parameters.SUB_ID }}
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  terraform init -reconfigure
+                  terraform destroy -auto-approve
+
+
+
