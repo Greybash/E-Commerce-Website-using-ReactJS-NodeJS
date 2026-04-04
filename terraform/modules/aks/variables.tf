@@ -24,7 +24,7 @@ variable "kubernetes_version" {
   default = null
 }
 
-variable "ssh_public_key" {}
+
 
 variable "tags" {
   type = map(string)
