@@ -25,6 +25,11 @@ variables:
   TF_WORKING_DIR: terraform
 
 stages:
+- stage: Approval
+  jobs:
+    - job:
+      steps:
+        - script: echo "Destroying terraform infra"
 
 
 - stage: Terraform_Destroy
