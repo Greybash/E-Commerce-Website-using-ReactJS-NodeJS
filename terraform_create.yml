@@ -1,0 +1,81 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  name: 'prempool'
+  demands:
+  - terraform
+
+variables:
+  TF_WORKING_DIR: terraform
+
+stages:
+
+- stage: Terraform_Plan
+  displayName: Terraform Plan
+  jobs:
+  - job: plan
+    displayName: Run Terraform Plan
+
+
+    steps:
+    - checkout: self
+
+
+    - script: |
+        echo "Initializing Terraform..."
+        terraform init
+
+        echo "Running Terraform Plan..."
+        terraform plan -out=tfplan
+
+        echo "Showing Plan..."
+        terraform show tfplan
+      workingDirectory: $(TF_WORKING_DIR)
+      displayName: Terraform Init & Plan
+
+    - script: |
+        terraform show -no-color tfplan > plan.txt
+      workingDirectory: $(TF_WORKING_DIR)
+      displayName: Save Plan Output
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(TF_WORKING_DIR)/tfplan
+        artifact: tfplan
+      displayName: Publish tfplan
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(TF_WORKING_DIR)/plan.txt
+        artifact: plan-output
+      displayName: Publish readable plan
+
+
+- stage: Terraform_Apply
+  displayName: Terraform Apply
+  dependsOn: Terraform_Plan
+  condition: and(succeeded(), ne('${{ parameters.destroy }}', 'Yes'))
+
+  jobs:
+  - deployment: apply
+    displayName: Apply Terraform
+    environment: terraform-approval  
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - script: |
+
+              echo "Applying Terraform..."
+              terraform apply -auto-approve tfplan
+            workingDirectory: $(TF_WORKING_DIR)
+            displayName: Terraform Apply
+
+
