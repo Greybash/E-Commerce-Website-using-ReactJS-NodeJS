@@ -22,9 +22,11 @@ variables:
 stages:
 
 
+
 - stage: Terraform_Plan
   displayName: Terraform Plan
   
+
   jobs:
   - job: plan
     displayName: Run Terraform Plan
@@ -38,22 +40,19 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          echo "Checking Azure login..."
           az account show
-
-          echo "Initializing Terraform..."
           terraform init -reconfigure
-
-          echo "Running Terraform Plan..."
           terraform plan -out=tfplan
-
-          echo "Showing Plan..."
           terraform show tfplan
         workingDirectory: $(TF_WORKING_DIR)
       displayName: Terraform Plan
 
     - script: |
         terraform show -no-color tfplan > plan.txt
+
+
+
+
       workingDirectory: $(TF_WORKING_DIR)
       displayName: Save Plan Output
 
@@ -94,10 +93,8 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                echo "Initializing Terraform..."
                 terraform init -reconfigure
-
-                echo "Applying Terraform..."
                 terraform apply -auto-approve tfplan
               workingDirectory: $(TF_WORKING_DIR)
             displayName: Terraform Apply
+
