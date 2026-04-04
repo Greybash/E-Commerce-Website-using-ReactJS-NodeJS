@@ -24,6 +24,9 @@ variable "kubernetes_version" {
   default = null
 }
 
+variable "ssh_public_key" {
+  type = string
+}
 
 
 variable "tags" {
