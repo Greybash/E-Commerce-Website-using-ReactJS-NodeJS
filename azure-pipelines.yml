@@ -1,0 +1,104 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main   
+
+pool:
+  name: 'prempool'
+  demands:
+    - docker
+    - trivy
+
+variables:
+- name: IMAGE_NAME1
+  value: "backend"
+
+- name: IMAGE_NAME2
+  value: "frontend"
+
+- name: DOCKERHUB_REPO
+  value: "greybash/E-Commerce-Website"
+
+- name: BUILD_TAG
+  value: $(Build.BuildNumber)
+
+- group: Dockerhub_creds   
+
+stages:
+- stage: Clean_up 
+  displayName: Cleaning the workspace
+  condition: always()
+  jobs:
+  - job: cleanup
+    workspace:
+      clean: all
+    steps:
+    - script: echo "done cleaning the workspace"
+
+- stage: Build
+  displayName: Building Docker Image
+  dependsOn: Clean_up
+  jobs:
+  - job: build
+    steps:
+    - checkout: self
+      clean: true
+    - script: |
+        ls -la
+        
+        docker build -t $(IMAGE_NAME1):$(BUILD_TAG) -f Dockerbackend .
+        docker build -t $(IMAGE_NAME2):$(BUILD_TAG) -f Dockerfrontend .
+
+- stage: Scan
+  displayName: Scanning Image
+  dependsOn: Build
+  jobs:
+  - job: scan
+    steps:
+    - script: |
+        trivy image \
+          --scanners vuln \
+          --format template \
+          --template "@/home/prempool/.trivy/templates/html.tpl" \
+          -o trivy-report1.html \
+          $(IMAGE_NAME1):$(BUILD_TAG)
+        trivy image \
+          --scanners vuln \
+          --format template \
+          --template "@/home/prempool/.trivy/templates/html.tpl" \
+          -o trivy-report2.html \
+          $(IMAGE_NAME2):$(BUILD_TAG)
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: 'trivy-report1.html'
+        artifact: 'trivy-report'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: 'trivy-report2.html'
+        artifact: 'trivy-report'
+
+
+- stage: Push
+  displayName: Push Image to DockerHub
+  dependsOn: Scan
+  jobs:
+  - job: push
+    steps:
+    - script: |
+        echo $(pass) | docker login -u $(username) --password-stdin
+      displayName: Docker Login
+
+    - script: |
+        docker tag $(IMAGE_NAME1):$(BUILD_TAG) $(DOCKERHUB_REPO):$(IMAGE_NAME1)
+        docker tag $(IMAGE_NAME1):$(BUILD_TAG) $(DOCKERHUB_REPO):$(IMAGE_NAME1)-$(BUILD_TAG)
+        docker push $(DOCKERHUB_REPO):$(IMAGE_NAME1)
+        docker push $(DOCKERHUB_REPO):$(IMAGE_NAME1)-$(BUILD_TAG)
+        docker tag $(IMAGE_NAME2):$(BUILD_TAG) $(DOCKERHUB_REPO):$(IMAGE_NAME2)
+        docker tag $(IMAGE_NAME2):$(BUILD_TAG) $(DOCKERHUB_REPO):$(IMAGE_NAME2)-$(BUILD_TAG)
+        docker push $(DOCKERHUB_REPO):$(IMAGE_NAME2)
+        docker push $(DOCKERHUB_REPO):$(IMAGE_NAME2)-$(BUILD_TAG)
+        
