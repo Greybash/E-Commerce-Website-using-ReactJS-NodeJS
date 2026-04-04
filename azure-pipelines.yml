@@ -38,6 +38,29 @@ stages:
     steps:
     - script: echo "done cleaning the workspace"
 
+- stage: Docker_Cleanup
+  displayName: Docker Cleanup Stage
+  condition: always()
+  jobs:
+  - job: cleanup_docker
+    displayName: Cleanup Docker Resources
+    steps:
+    - script: |
+        echo "Stopping all containers..."
+        docker stop $(docker ps -aq) || true
+
+        echo "Removing all containers..."
+        docker rm $(docker ps -aq) || true
+
+        echo "Removing all images..."
+        docker rmi -f $(docker images -aq) || true
+
+        echo "Pruning volumes..."
+        docker volume prune -f
+
+        echo "Docker cleanup completed"
+      displayName: Full Docker Cleanup
+
 - stage: Build
   displayName: Building Docker Image
   dependsOn: Clean_up
@@ -49,8 +72,8 @@ stages:
     - script: |
         ls -la
         
-        docker build -t $(IMAGE_NAME1):$(BUILD_TAG) -f Dockerbackend .
-        docker build -t $(IMAGE_NAME2):$(BUILD_TAG) -f Dockerfrontend .
+        docker build -t $(IMAGE_NAME1):$(BUILD_TAG) -f Dockerbackend . --no-cache
+        docker build -t $(IMAGE_NAME2):$(BUILD_TAG) -f Dockerfrontend . --no-cache
 
 - stage: Scan
   displayName: Scanning Image
@@ -75,11 +98,11 @@ stages:
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: 'trivy-report1.html'
-        artifact: 'trivy-report'
+        artifact: 'trivy-report1'
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: 'trivy-report2.html'
-        artifact: 'trivy-report'
+        artifact: 'trivy-report2'
 
 
 - stage: Push
