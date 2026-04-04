@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- main   
+- master 
 
 pool:
   name: 'prempool'
@@ -20,7 +20,7 @@ variables:
   value: "frontend"
 
 - name: DOCKERHUB_REPO
-  value: "greybash/E-Commerce-Website"
+  value: "greybash/e-commerce-website"
 
 - name: BUILD_TAG
   value: $(Build.BuildNumber)
@@ -63,7 +63,7 @@ stages:
 
 - stage: Build
   displayName: Building Docker Image
-  dependsOn: Clean_up
+  dependsOn: Docker_Cleanup
   jobs:
   - job: build
     steps:
