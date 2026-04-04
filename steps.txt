@@ -1,2 +1,20 @@
 install mongodb
-install npm
+install npm and nodejs
+run locally to know what to do and note them
+make containers with only the project files and run it in docker 
+check connection of all container with each other
+deploy it on docker locally and see if it works
+make k8s cluster on minikube and test it
+deploy it on aks maunally
+write terraform code for infra
+write pipeline to provison the infra and destroy it in azure devops
+write build and test code for code (ci pipelien)
+write deploy pipeline
+
+
+additional features if time
+workpaces and s3 backend
+different infra for different version(dev and prod)
+
+
+

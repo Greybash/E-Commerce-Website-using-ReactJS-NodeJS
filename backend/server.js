@@ -13,8 +13,6 @@ const path = require("path");
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
-const mongodbUrl = config.MONGODB_URL;
-
 mongoose
     .connect(mongodbUrl, {
         useNewUrlParser: true,
@@ -23,7 +21,7 @@ mongoose
     })
     .catch(error => console.log(error.reason));
 
-const importData = async () => {
+const importData = async () => {    
     try {
         await Product.deleteMany();
         await Product.insertMany(data.products);

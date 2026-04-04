@@ -13,6 +13,7 @@ import ProductsScreen from "./screens/ProductsScreen";
 import ShipppingScreen from "./screens/ShippingScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 import logo from "./Images/logo.png";
 
@@ -89,6 +90,7 @@ function App() {
                         />
                         <Route path="/signin" component={SigninScreen} />
                         <Route path="/register" component={RegisterScreen} />
+                        <Route path="/profile" component={ProfileScreen} />
                         <Route path="/product/:id" component={ProductScreen} />
                         <Route path="/category/:category" component={HomeScreen} />
                         <Route path="/" exact={true} component={HomeScreen} />

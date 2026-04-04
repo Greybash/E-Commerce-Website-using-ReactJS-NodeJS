@@ -11,7 +11,7 @@ pool:
 
 stages:
 
-# ---------------- CLEAN ----------------
+
 - stage: Clean_up
   displayName: Cleaning the workspace
   condition: always()
@@ -22,7 +22,6 @@ stages:
     steps:
     - script: echo "Workspace cleaned"
 
-# ---------------- BUILD ----------------
 - stage: Build
   displayName: Build Frontend
   dependsOn: Clean_up
@@ -53,13 +52,11 @@ stages:
         npm run build
       displayName: 'Build React App'
 
-    # ---------------- ARTIFACT PREP ----------------
     - script: |
         mkdir -p artifact
         cp -r frontend/build artifact/
       displayName: "Prepare artifact folder"
 
-    # ---------------- PUBLISH ARTIFACT ----------------
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'artifact'
