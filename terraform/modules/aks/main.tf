@@ -20,13 +20,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type = "SystemAssigned"
   }
 
-  linux_profile {
-    admin_username = "azureuser"
+resource "tls_private_key" "aks_ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-    ssh_key {
-      key_data = var.ssh_public_key
-    }
+linux_profile {
+  admin_username = "azureuser"
+
+  ssh_key {
+    key_data = tls_private_key.aks_ssh.public_key_openssh
   }
+}
 
   network_profile {
     network_plugin = "azure"
