@@ -28,7 +28,7 @@ module "aks" {
   node_count = 2
   vm_size    = "Standard_D2ls_v5"
 
-  ssh_public_key = file("~/.ssh/id_rsa.pub")
+ 
 
   tags = {
     "Resource Owner"        = "Prem"
