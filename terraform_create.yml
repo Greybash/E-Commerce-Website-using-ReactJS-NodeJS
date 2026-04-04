@@ -10,6 +10,11 @@ pool:
   name: 'prempool'
   demands:
     - terraform
+parameters:
+  - name: SUB_ID
+    displayName: 'Azure Subscription'
+    type: string
+
 
 variables:
   TF_WORKING_DIR: terraform
@@ -18,13 +23,23 @@ stages:
 
 - stage: Terraform_Plan
   displayName: Terraform Plan
+  
   jobs:
+  
   - job: plan
     displayName: Run Terraform Plan
 
 
     steps:
     - checkout: self
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: ${{parameters.SUB_ID}}
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az account show
 
 
     - script: |
