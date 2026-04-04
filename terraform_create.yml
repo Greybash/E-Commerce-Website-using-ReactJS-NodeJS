@@ -21,38 +21,36 @@ variables:
 
 stages:
 
+
 - stage: Terraform_Plan
   displayName: Terraform Plan
   
   jobs:
-  
   - job: plan
     displayName: Run Terraform Plan
-
 
     steps:
     - checkout: self
 
     - task: AzureCLI@2
       inputs:
-        azureSubscription: ${{parameters.SUB_ID}}
+        azureSubscription: ${{ parameters.SUB_ID }}
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
+          echo "Checking Azure login..."
           az account show
 
+          echo "Initializing Terraform..."
+          terraform init -reconfigure
 
-    - script: |
-        echo "Initializing Terraform..."
-        terraform init
+          echo "Running Terraform Plan..."
+          terraform plan -out=tfplan
 
-        echo "Running Terraform Plan..."
-        terraform plan -out=tfplan
-
-        echo "Showing Plan..."
-        terraform show tfplan
-      workingDirectory: $(TF_WORKING_DIR)
-      displayName: Terraform Init & Plan
+          echo "Showing Plan..."
+          terraform show tfplan
+        workingDirectory: $(TF_WORKING_DIR)
+      displayName: Terraform Plan
 
     - script: |
         terraform show -no-color tfplan > plan.txt
@@ -63,13 +61,11 @@ stages:
       inputs:
         targetPath: $(TF_WORKING_DIR)/tfplan
         artifact: tfplan
-      displayName: Publish tfplan
 
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(TF_WORKING_DIR)/plan.txt
         artifact: plan-output
-      displayName: Publish readable plan
 
 
 - stage: Terraform_Apply
@@ -80,18 +76,28 @@ stages:
   jobs:
   - deployment: apply
     displayName: Apply Terraform
-    environment: terraform-approval  
+    environment: terraform-approval   
     strategy:
       runOnce:
         deploy:
           steps:
+          - checkout: self
 
+          # - task: DownloadPipelineArtifact@2
+          #   inputs:
+          #     artifact: tfplan
+          #     path: $(TF_WORKING_DIR)
 
-          - script: |
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: ${{ parameters.SUB_ID }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                # echo "Initializing Terraform..."
+                # terraform init -reconfigure
 
-              echo "Applying Terraform..."
-              terraform apply -auto-approve tfplan
-            workingDirectory: $(TF_WORKING_DIR)
+                echo "Applying Terraform..."
+                terraform apply -auto-approve tfplan
+              workingDirectory: $(TF_WORKING_DIR)
             displayName: Terraform Apply
-
-
