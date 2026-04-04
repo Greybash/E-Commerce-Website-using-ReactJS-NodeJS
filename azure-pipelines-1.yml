@@ -38,7 +38,7 @@ stages:
   jobs:
       - deployment: destroy
         displayName: Destroy Terraform
-        environment: terraform-approval-destroy
+        environment: terraform-destroy
         strategy:
           runOnce:
             deploy:
