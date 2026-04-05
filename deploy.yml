@@ -1,0 +1,63 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: 'prempool'
+  demands:
+    - terraform
+parameters:
+  - name: SUB_ID
+    displayName: 'Azure Subscription'
+    type: string
+
+
+variables:
+  WORKING_DIR: k8s
+
+stages:
+- stage: Approval
+  displayName: Approval
+  
+
+  jobs:
+  - job: approve_deployment
+    displayName: deployment approval
+    steps:
+      - script: echo "Waiting for Approval"
+
+
+- stage: Deployment
+  displayName: Deploying
+  
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deployment Approval
+    environment: deployment-approval   
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - task: KubectlInstaller@0
+            inputs:
+              kubectlVersion: 'latest'
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: ${{ parameters.SUB_ID }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az account show
+                az aks get-credentials -g E-commerce-rg -n E-commerce --overwrite-existing
+                bash k8scmd.sh
+                
+              workingDirectory: $(WORKING_DIR)
+            displayName: Deployment
