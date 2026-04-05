@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: greybash/e-commerce:backend
+        image: greybash/e-commerce-website:backend
+
         ports:
         - containerPort: 5000
         env:

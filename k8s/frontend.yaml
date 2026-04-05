@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: greybash/e-commerce:frontend
+        image: greybash/e-commerce-website:frontend
+
         ports:
         - containerPort: 3000
         tty: true
