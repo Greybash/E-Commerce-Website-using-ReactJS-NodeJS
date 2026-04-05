@@ -58,6 +58,10 @@ stages:
                 az account show
                 az aks get-credentials -g E-commerce-rg -n E-commerce --overwrite-existing
                 bash k8scmd.sh
+                IP=$(kubectl get ingress ecommerce-ingress -n e-commerce -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+                echo "APP URL: http://$IP"
+                echo "##vso[task.setvariable variable=APP_URL]http://$IP"
                 
               workingDirectory: $(WORKING_DIR)
             displayName: Deployment
