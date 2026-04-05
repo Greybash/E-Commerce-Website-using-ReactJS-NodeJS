@@ -11,7 +11,8 @@ sleep 15
 kubectl get pods -n ingress-nginx
 kubectl apply -f ingress.yaml -n e-commerce
 sleep 15
-kubectl get svc -n ingress-nginx
+kubectl get ingress -n e-commerce
+
 
 
 kubectl get svc -n e-commerce -o wide
