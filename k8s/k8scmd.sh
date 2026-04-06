@@ -8,6 +8,7 @@ kubectl apply -f frontend.yaml -n e-commerce
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 sleep 30
+kubectl wait --for=condition=Ready pod/ingress-nginx --timeout=160s
 
 kubectl get pods -n ingress-nginx
 
